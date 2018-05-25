@@ -196,17 +196,17 @@ function animation(ctx, attri, percent) {
   }
   attri.forEach((item) => {
     if (item.atype == "static") {
-      ctx.setStrokeStyle(item.newchar.fontcolor);
+      ctx.setFillStyle(item.newchar.fontcolor);
       ctx.font = (item.newchar.fontstyle + " " + item.newchar.fontweight + " " + item.newchar.fontsize + " " + item.newchar.fontfamily).trim();
       ctx.fillText(item.newchar.content, item.new_x, item.new_y);
     }
     else {
       ctx.setGlobalAlpha(1 - percent);
-      ctx.setStrokeStyle(item.oldchar.fontcolor);
+      ctx.setFillStyle(item.oldchar.fontcolor);
       ctx.font = (item.oldchar.fontstyle + " " + item.oldchar.fontweight + " " + item.oldchar.fontsize + " " + item.oldchar.fontfamily).trim();
       ctx.fillText(item.oldchar.content, item.old_x, item.old_y - formatFontSizeUnit(item.oldchar.fontsize) * percent);
       ctx.setGlobalAlpha(percent);
-      ctx.setStrokeStyle(item.newchar.fontcolor);
+      ctx.setFillStyle(item.newchar.fontcolor);
       ctx.font = (item.newchar.fontstyle + " " + item.newchar.fontweight + " " + item.newchar.fontsize + " " + item.newchar.fontfamily).trim();
       ctx.fillText(item.newchar.content, item.new_x, item.new_y + formatFontSizeUnit(item.newchar.fontsize) * (1 - percent));
       ctx.setGlobalAlpha(1);
