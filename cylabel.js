@@ -114,13 +114,15 @@ var attriText = function attriText(content, thisvalue) {
     });
   }
   var defaultSections = content.split(reg);
-  defaultSections.forEach((item)=>{
+  var pos = 0;
+  defaultSections.forEach((item,index)=>{
     if (item.length > 0) {
       var fontsize = thisvalue ? thisvalue.defaultFontSize : undefined;
       var fontcolor = thisvalue ? thisvalue.defaultFontColor : undefined;
       var fontweight = thisvalue ? thisvalue.defaultFontWeight : undefined;
       var section = new attriTextSection(item, fontsize, fontcolor, fontweight );
-      this.sections.push(section);
+      this.sections.splice(index + pos, 0, section);
+      pos++;
     }
   });
 }

@@ -25,11 +25,12 @@ Page({
     query_left.exec(function (res) {
       that.data.leftLabel = new cylabel('left', res[0].width, res[0].height);
       that.data.leftLabel.setDefaultParameter({
-        textAlign: "left"
+        textAlign: "left",
+        defaultFontSize: '20px',
+        defaultFontColor: 'black',
+        defaultFontWeight: 'normal',
       })
-      for (let i = 100; i < 110; i++) {
-        that.data.leftLabel.setText(i.toString());
-      }
+      that.data.leftLabel.setText('<label style="font-size:30px;font-weight:bold;color:blue;">你好！</label>朋友<label style="font-size:15px;font-weight:nomal;color:red;">！</label>欢迎<label style="font-size:15px;font-weight:nomal;color:red;">使用</label>！');
     });
     ////
     var query_center = wx.createSelectorQuery()
@@ -37,11 +38,12 @@ Page({
     query_center.exec(function (res) {
       that.data.centerLabel = new cylabel('center', res[0].width, res[0].height);
       that.data.centerLabel.setDefaultParameter({
-        textAlign: "center"
+        textAlign: "center",
+        defaultFontSize: '10px',
+        defaultFontColor: 'black',
+        defaultFontWeight: 'bold',
       })
-      for (let i = 200; i < 210; i++) {
-        that.data.centerLabel.setText(i.toString());
-      }
+      that.data.centerLabel.setText('<label style="font-size:30px;font-weight:bold;color:blue;">你好！</label>朋友<label style="font-size:15px;font-weight:nomal;color:red;">！</label>欢迎<label style="font-size:15px;font-weight:nomal;color:red;">使用</label>！');
     });
     ////////
     var query_right = wx.createSelectorQuery()
@@ -49,11 +51,12 @@ Page({
     query_right.exec(function (res) {
       that.data.rightLabel = new cylabel('right', res[0].width, res[0].height);
       that.data.rightLabel.setDefaultParameter({
-        textAlign: "right"
+        textAlign: "right",
+        defaultFontSize: '25px',
+        defaultFontColor: 'black',
+        defaultFontWeight: 'normal',
       })
-      for (let i = 300; i < 310; i++) {
-        that.data.rightLabel.setText(i.toString());
-      }
+      that.data.rightLabel.setText('<label style="font-size:30px;font-weight:bold;color:blue;">你好！</label>朋友<label style="font-size:15px;font-weight:nomal;color:red;">！</label>欢迎<label style="font-size:15px;font-weight:nomal;color:red;">使用</label>！');
     });
   }
 })
