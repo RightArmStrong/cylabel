@@ -17,7 +17,7 @@ function formatFontSizeUnit(fontsize) {
   return parseFloat(fontsize);
 }
 /////////////////////////////attriTextSegment//////////////////////////
-var attriTextSegment = function textSeg(content, fontsize, fontcolor, fontweight, fontfamily, fontstyle){
+var attriTextSegment = function textSeg(content, fontsize, fontcolor, fontweight, fontstyle, fontfamily){
   this.content = content;
   this.fontstyle = typeof fontstyle != 'undefined' ? fontstyle : config.defaultFontStyle;
   this.fontsize = typeof fontsize != 'undefined' ? fontsize : config.defaultFontSize;
@@ -44,7 +44,7 @@ attriTextSegment.prototype.compare = function (seg) {
   return 0;//表示等于
 }
 /////////////////////////////attriTextSection//////////////////////////
-var attriTextSection = function attriTextSection(content, fontsize, fontcolor, fontweight, fontfamily, fontstyle) {
+var attriTextSection = function attriTextSection(content, fontsize, fontcolor, fontweight, fontstyle, fontfamily) {
   this.content = content;
   this.fontstyle = typeof fontstyle != 'undefined' ? fontstyle : config.defaultFontStyle;
   this.fontsize = typeof fontsize != 'undefined' ? fontsize : config.defaultFontSize;
@@ -67,6 +67,8 @@ var attriText = function attriText(content, thisvalue) {
         var fontsize = thisvalue ? thisvalue.defaultFontSize : undefined;
         var fontcolor = thisvalue ? thisvalue.defaultFontColor :  undefined;
         var fontweight = thisvalue ? thisvalue.defaultFontWeight :  undefined;
+        var fontstyle = thisvalue ? thisvalue.defaultFontStyle : undefined;
+        var fontfamily = thisvalue ? thisvalue.defaultfontFamily : undefined;
         //获取内容
         var res_content = res.match(">.*<");
         if (res_content != null){
@@ -103,12 +105,18 @@ var attriText = function attriText(content, thisvalue) {
                   case 'font-weight':
                     fontweight = attrKeyValue[1].trim();
                     break;
+                  case 'font-style':
+                    fontstyle = attrKeyValue[1].trim();
+                    break;
+                  case 'font-family':
+                    fontfamily = attrKeyValue[1].trim();
+                    break;
                 }
               }
             })
           }
         } 
-        var section = new attriTextSection(content, fontsize, fontcolor, fontweight );
+        var section = new attriTextSection(content, fontsize, fontcolor, fontweight, fontstyle, fontfamily );
         this.sections.push(section);
       }
     });
@@ -120,7 +128,9 @@ var attriText = function attriText(content, thisvalue) {
       var fontsize = thisvalue ? thisvalue.defaultFontSize : undefined;
       var fontcolor = thisvalue ? thisvalue.defaultFontColor : undefined;
       var fontweight = thisvalue ? thisvalue.defaultFontWeight : undefined;
-      var section = new attriTextSection(item, fontsize, fontcolor, fontweight );
+      var fontstyle = thisvalue ? thisvalue.defaultFontStyle : undefined;
+      var fontfamily = thisvalue ? thisvalue.defaultfontFamily : undefined;
+      var section = new attriTextSection(item, fontsize, fontcolor, fontweight, fontstyle, fontfamily );
       this.sections.splice(index + pos, 0, section);
       pos++;
     }
@@ -189,7 +199,6 @@ attriText.prototype.measure = function (ctx, start, end) {
 }
 /////////////////////////////cylabel//////////////////////////
 function animation(ctx, attri, percent) {
-  ctx.restore();
   if (typeof percent == "undefined") {
     percent = 0;
   }
@@ -244,15 +253,23 @@ cylabel.prototype.setDefaultParameter = function (option) {
   this.defaultanimationDuration = option.defaultanimationDuration;
 }
 
+cylabel.prototype.DrawWithoutAnimtion = function(content, thisValue) {
+  thisValue.animationPool.splice(0, thisValue.animationPool.length);
+  thisValue.AnimationRun = false;
+  animation(thisValue.ctx, content, 1);
+}
+
 cylabel.prototype.runAnimation = function (thisValue) {
   if (thisValue.animationPool.length > 0) {
     thisValue.AnimationRun = true;
     var ani = this.animationPool[0];
     if (ani.percent < 1) {
       setTimeout(() => {
-        animation(thisValue.ctx, ani.data, ani.percent);
-        thisValue.runAnimation(thisValue);
-        ani.percent += 0.1;
+        if (thisValue.AnimationRun) {
+          animation(thisValue.ctx, ani.data, ani.percent);
+          thisValue.runAnimation(thisValue);
+          ani.percent += 0.1;
+        }
       }, ani.span);
     }
     else {
@@ -365,10 +382,22 @@ cylabel.prototype.setText = function(content, hasAnimation) {
     }
   }
   if (parseInt(animationDuration) <= 0) animationDuration = config.defaultanimationDuration;
-  this.animationPool.push({ data: attrChars, span: animationDuration, percent:0});
-  if (!this.AnimationRun) {
-    this.runAnimation(this);
-  };
+  var hasDynamic = false;
+  for (var char in attrChars) {
+    if (attrChars[char].atype == 'dynamic') {
+      hasDynamic = true;
+      break;
+    }
+  }
+  if (hasDynamic) {
+    this.animationPool.push({ data: attrChars, span: animationDuration, percent: 0 });
+    if (!this.AnimationRun) {
+      this.runAnimation(this);
+    };
+  }
+  else {
+    this.DrawWithoutAnimtion(attrChars, this);
+  }
   this.content = attrContent;
 }
 

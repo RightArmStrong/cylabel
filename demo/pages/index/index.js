@@ -9,7 +9,7 @@ Page({
   },
   //事件处理函数
   bindViewTap: function() {
-    this.data.leftLabel.setText(this.data.content);
+    this.data.leftLabel.setText(this.data.content, false);
     this.data.centerLabel.setText(this.data.content);
     this.data.rightLabel.setText(this.data.content);
   },
@@ -30,7 +30,10 @@ Page({
         defaultFontColor: 'black',
         defaultFontWeight: 'normal',
       })
-      that.data.leftLabel.setText('<label style="font-size:30px;font-weight:bold;color:blue;">你好！</label>朋友<label style="font-size:15px;font-weight:nomal;color:red;">！</label>欢迎<label style="font-size:15px;font-weight:nomal;color:red;">使用</label>！');
+      for (let i = 0; i < 100; i++) {
+        that.data.leftLabel.setText(i.toString());
+      }
+      //that.data.leftLabel.setText('<label style="font-size:30px;font-weight:bold;color:blue;">你好！</label>朋友<label style="font-size:15px;font-weight:nomal;color:red;">！</label>欢迎<label style="font-size:15px;font-weight:nomal;color:red;">使用</label>！');
     });
     ////
     var query_center = wx.createSelectorQuery()
